@@ -16,6 +16,8 @@ model User {
   updated_at DateTime @updatedAt
   roles      Role?    @relation(fields: [role_id], references: [role_id])
   role_id    Int?
+  company  Company? @relation(fields: [company_id], references: [company_id])
+  company_id Int?
 
   @@map("users")
 }
@@ -47,12 +49,15 @@ model PermissionRole {
 }
 
 model Company {
-  company_id      Int    @id @unique @default(autoincrement())
-  slug            String
+  company_id      Int      @id @unique @default(autoincrement())
+  slug            String   @unique
   name            String
   payment_options String
   address         String
   picture         String
+  created_at      DateTime @default(now())
+  updated_at      DateTime @updatedAt
+  users           User[]
 
   @@map("companies")
 }

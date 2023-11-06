@@ -41,10 +41,10 @@ export const authMiddleware = async (
       throw new UnauthorizedError("Não autorizado");
     }
 
-    const { password: _, roleRole_id, ...loggedUser } = user;
+    const { password: _, role_id, ...loggedUser } = user;
 
     // Verifique as funções do usuário
-    if (!userHasPermission(roleRole_id, req)) {
+    if (!userHasPermission(role_id, req)) {
       throw new UnauthorizedError("Não autorizado");
     }
 
@@ -60,7 +60,7 @@ export const authMiddleware = async (
 };
 
 // Função para verificar permissões do usuário
-export const userHasPermission = (userRoles: number | null, req: Request) => {
+export const userHasPermission = (userRoles: number | null | undefined, req: Request) => {
   // Verifique se o usuário tem a permissão necessária com base nas suas roles
   // Neste exemplo, verificamos se o usuário é "owner" ou "Admin"
   return userRoles === UserRoles.OWNER || userRoles === UserRoles.ADMIN;

@@ -1,35 +1,31 @@
 import { Request, Response } from "express";
-import { CreateCompany } from "../repositories/createCompany";
 import { CompanyModel } from "../models/createCompany.model";
-import { userHasPermission } from "../middlewares/authMiddleware";
+import { CreateCompanyRepository } from "../repositories/createCompanyRepository";
 
 export class CreateCompanyController {
   async createCompany(req: Request, res: Response) {
-    const {
-      company_id,
-      slug,
-      name,
-      payment_options,
-      address,
-      picture,
-    }: CompanyModel = req.body;
+    const { slug, name, payment_options, address, picture }: CompanyModel =
+      req.body;
 
-    const createCompany = new CreateCompany();
+    const createCompanyRepo = new CreateCompanyRepository();
 
-    // A criação da empresa só será permitida se o usuário tiver as funções necessárias
-    // if (!userHasPermission(req.user.roleRole_id, req)) {
-    //   return res.status(403).json({ error: "Permissão negada" });
-    // }
+    try {
+      const newCompany = await createCompanyRepo.createCompany({
+        slug,
+        name,
+        payment_options,
+        address,
+        picture,
+      });
 
-    const { password: _, ...company } = await createCompany.execute({
-      company_id,
-      slug,
-      name,
-      payment_options,
-      address,
-      picture,
-    });
+      return res.status(201).json(newCompany);
+    } catch (error: any) {
+      return res.status(400).json({ error: error.message });
+    }
+  }
 
-    return res.status(201).json(company);
+  async getCompany(req: any, res: Response) {
+    console.log(res);
+    return res.json(req.company);
   }
 }
